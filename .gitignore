@@ -1,0 +1,30 @@
+# ROS 2 / CMake
+build/
+install/
+log/
+CMakeFiles/
+CMakeCache.txt
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Runtime data and local configuration
+runtime/
+volume_recordings/
+*.mrb
+*.mrml
+*.nrrd
+*.nii
+*.nii.gz
+*.bag
+*.db3
+*.mcap
+.env
+config/system.local.yaml
+
+# IDE / OS
+.idea/
+.vscode/
+*~
+.DS_Store

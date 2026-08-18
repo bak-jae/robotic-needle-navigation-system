@@ -1,0 +1,13 @@
+diff --git a/MRML/vtkSlicerToROS2.cxx b/MRML/vtkSlicerToROS2.cxx
+index 114f2b1..2d5742b 100644
+--- a/MRML/vtkSlicerToROS2.cxx
++++ b/MRML/vtkSlicerToROS2.cxx
+@@ -226,6 +226,8 @@ void vtkSlicerToROS2(vtkTypeUInt8Array * input, sensor_msgs::msg::Image & result
+   result.width = input->GetNumberOfComponents();
+   result.height = input->GetNumberOfTuples();
+   result.encoding = "mono8"; // grayscale for ultrasound
++  result.is_bigendian = false;
++  result.step = result.width; // mono8: one byte per pixel
+   const size_t numberOfValues = input->GetNumberOfValues();
+   for (size_t i = 0; i < numberOfValues; ++i) {
+     picture.push_back(input->GetValue(i));

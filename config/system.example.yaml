@@ -1,0 +1,23 @@
+# Documentation-level machine configuration. The current runtime does not read
+# this file automatically; copy it to system.local.yaml and record site values.
+ultrasound:
+  device: Telemed ArtUS
+  plus_version: 2.8.0
+  plus_host: 192.168.0.102  # example only; replace with the Windows sender IP
+  plus_port: REPLACE_WITH_PLUS_SERVER_PORT
+  openigtlink_device_name: REPLACE_WITH_IMAGE_DEVICE_NAME
+  slicer_volume_name: Image_Reference
+  projection_topic: /ultrasound/projection/max
+  projection_mode: max
+
+motor:
+  controller: EPOS4
+  can_interface: can0
+  can_bitrate: 1000000
+  rotational_node_id: 1
+  linear_node_id: 2
+
+registration:
+  image_to_probe_transform: ImageToProbe
+  probe_to_image_transform: ProbeToImage
+  dynamic_needle_transform: NeedleMoveEncoder

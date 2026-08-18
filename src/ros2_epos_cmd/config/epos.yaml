@@ -1,0 +1,46 @@
+epos_motion_bridge_node:
+  ros__parameters:
+    node_id_theta: 1
+    node_id_linear: 2
+    device_name: EPOS4
+    protocol_stack_name: CANopen
+    interface_name: "CAN_ix_usb_can 0"
+    port_name: CAN0
+    baudrate: 1000000
+
+    gear_ratio: 295.0
+    encoder_cpr: 2048
+    invert_direction: false
+    absolute: true
+    define_zero_on_start: true
+    profile_velocity: 4000
+    profile_acceleration: 8000
+    profile_deceleration: 4000
+
+    enable_linear: true
+    linear_mm_per_rev: 2.0
+    linear_gear_ratio: 4.384615384615385
+    linear_encoder_cpr: 2048
+    linear_invert_direction: false
+    linear_absolute: true
+    linear_define_zero_on_start: true
+    linear_profile_velocity: 10000
+    linear_profile_acceleration: 12000
+    linear_profile_deceleration: 4000
+
+    fast_profile_velocity: 4000
+    fast_profile_acceleration: 8000
+    fast_profile_deceleration: 8000
+    linear_fast_profile_velocity: 10000
+    linear_fast_profile_acceleration: 16000
+    linear_fast_profile_deceleration: 16000
+
+    topic_cmd_theta: /needle/cmd/theta_deg
+    topic_cmd_linear: /needle/cmd/d_mm
+    topic_cmd_theta_velocity: /needle/cmd/theta_velocity
+    topic_cmd_linear_velocity: /needle/cmd/d_velocity
+    topic_execute_fast_mode: /needle/cmd/execute_fast_mode
+    topic_state_theta: /needle/state/theta_deg
+    topic_state_linear: /needle/state/d_mm
+    state_period_ms: 30
+    status_period_ms: 500

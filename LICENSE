@@ -1,0 +1,92 @@
+PNU Advanced Robotics Lab Academic Research License
+Version 1.0, 2026
+
+Copyright 2026 Pusan National University, Advanced Robotics Lab
+All rights reserved except as expressly granted below.
+
+1. Definitions
+
+"Software" means the source code, documentation, configuration files, and other
+original materials distributed with this license.
+
+"Academic Purpose" means non-commercial teaching, coursework, student projects,
+scholarly research, scientific evaluation, reproducibility studies, and publication
+of research results.
+
+"Commercial Use" means any use intended for or directed toward commercial advantage
+or monetary compensation, including product or service development, paid consulting,
+commercial deployment, internal business operations unrelated to academic research,
+or use in support of a commercial offering.
+
+2. Academic Research and Education Grant
+
+Subject to this license, the copyright holder grants you a non-exclusive,
+non-transferable, worldwide, royalty-free right to use, reproduce, study, and modify
+the Software solely for an Academic Purpose.
+
+You may distribute the Software or your modifications solely for an Academic Purpose,
+provided that you:
+
+a. include this license and all copyright and attribution notices;
+b. clearly identify modified files and describe material changes;
+c. distribute the Software and modifications under this same license;
+d. do not charge a fee other than reasonable physical distribution costs; and
+e. do not imply endorsement by Pusan National University, Advanced Robotics Lab,
+   its members, contributors, or third-party suppliers.
+
+Publication of research results produced using the Software is permitted. Academic
+users are requested to acknowledge Pusan National University, Advanced Robotics Lab
+and cite the project repository when appropriate.
+
+3. Uses Not Granted
+
+This license does not grant permission for:
+
+a. Commercial Use;
+b. clinical diagnosis, treatment, patient care, or operation as a medical device;
+c. safety-critical production deployment;
+d. relicensing the Software under different terms;
+e. use of the names, logos, or trademarks of Pusan National University or Advanced
+   Robotics Lab except for factual attribution; or
+f. use or redistribution of third-party software beyond the rights granted by its
+   respective owner.
+
+Any use not expressly permitted requires prior written permission from the copyright
+holder. Permission requests may be sent to pjs2207@pusan.ac.kr.
+
+4. Third-Party Dependencies
+
+This license applies only to original project materials that the copyright holder has
+the right to license. Maxon EPOS software and other third-party dependencies are not
+licensed under these terms and must be obtained and used under their respective
+licenses. See THIRD_PARTY.md.
+
+5. No Patent or Trademark License
+
+No patent, trademark, or other intellectual-property rights are granted except for the
+copyright permissions expressly stated in this license.
+
+6. Disclaimer of Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, TITLE, NON-INFRINGEMENT, ACCURACY, SAFETY, OR REGULATORY COMPLIANCE.
+
+7. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE COPYRIGHT HOLDER, CONTRIBUTORS, AND THEIR
+AFFILIATED INSTITUTIONS SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
+WHETHER IN CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH
+THE SOFTWARE OR ITS USE, INCLUDING OPERATION OF PHYSICAL HARDWARE.
+
+8. Termination
+
+Your rights under this license terminate automatically if you fail to comply with its
+terms. Upon termination, you must stop using and distributing the Software and destroy
+copies in your possession, except copies required to be retained by law. Sections 3
+through 7 survive termination.
+
+9. Separate Permission
+
+Commercial, clinical, or other uses outside Academic Purpose may be available under a
+separate written agreement with Pusan National University, Advanced Robotics Lab.
