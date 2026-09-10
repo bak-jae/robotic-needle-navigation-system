@@ -1,32 +1,91 @@
 # Needle Navigation Slicer module
 
-This module embeds the existing needle control, volume preview, and recording interface
-from `preview_move_capture.py` in the Slicer module panel instead of opening a separate
-window. It computes `numpy.max(volume, axis=0)` across all Z slices of the selected scalar
-volume and publishes the result at its original resolution on
-`/ultrasound/projection/max` before Qt preview scaling.
+`NeedleNavigation.py` embeds the existing `preview_move_capture.py` control interface in
+3D Slicer and adds an out-of-process needle-tip detection pipeline. It does not open a
+separate tracking window.
 
-## Load the module
+## Responsibilities
 
-1. In Slicer, open **Edit > Application Settings > Modules**.
-2. Add this repository's `slicer_modules` directory to **Additional module paths**.
-3. Restart Slicer and select **IGT > Needle Navigation**.
-4. Select the OpenIGTLink volume under **Input ultrasound volume**.
+The module:
 
-The volume does not need to be named `Image_Reference`; selecting any scalar volume binds
-it to the publisher and preview at runtime. CAN setup, homing, and
-`needle_closed_loop.launch.py` remain external terminal operations.
+- selects the incoming OpenIGTLink scalar volume;
+- computes a full-resolution maximum projection across its Z axis;
+- publishes the projection and encoder-derived needle geometry to ROS 2;
+- starts and stops the local detector process;
+- receives the numeric detection and mono8 preview;
+- displays original and detected images in synchronized Red and Yellow Slice views.
 
-Do not run `preview_move_capture.py` in the Python Interactor while this module is active.
-Doing so may create duplicate timers, publishers, and motor commands. To preserve the
-existing behavior, module initialization may publish theta=0 and d=0 commands.
+CAN configuration, homing, and the EPOS bridge remain external operations. The detector
+has no publisher for motor command topics.
+
+## Slice presentation
+
+The side-by-side layout is intentional:
+
+- **Red / Original:** ultrasound plus existing motor boundary, encoder model, preview model,
+  and click point;
+- **Yellow / Detection:** ultrasound plus only the final detected tip, drawn as a red cross.
+
+Yellow hides `NeedleReachBoundary`, `NeedleClickPoint`, `NeedleEncoderModel`, and
+`NeedlePreviewModel` display nodes. Both views use the exact same SliceToRAS matrix. The
+derived volumes also copy the input volume's IJK-to-RAS matrix and parent transform, so image
+direction, physical pixel spacing, aspect ratio, and calibrated boundary alignment are
+preserved.
+
+The legacy OpenCV preview uses a 180-degree NumPy flip. Detector data follows that convention;
+the module reverses the flip before placing pixels back into Slicer IJK space.
+
+## Load in Slicer
+
+1. Open **Edit > Application Settings > Modules**.
+2. Add `/path/to/robotic-needle-navigation-system/slicer_modules` to
+   **Additional module paths**.
+3. Restart Slicer.
+4. Select **IGT > Needle Navigation**.
+5. Select the received ultrasound scalar volume.
+
+Do not run `preview_move_capture.py` from the Python Interactor while the module is active.
+That would create duplicate timers, ROS publishers, and possibly motor commands.
+
+## Start detection
+
+Before starting Slicer, prepare the external Python environment and supply an authorized
+checkpoint as described in [`tracker_runtime/README.md`](tracker_runtime/README.md). Then:
+
+1. Press **Start Tracker**.
+2. Wait for valid encoder geometry. The first ten visible frames are warmup frames.
+3. Use **Show Original + Detection in Slices** whenever another Slicer layout has replaced
+   the side-by-side view.
+4. Press **Stop Tracker** to terminate only the detector process.
+
+The default checkpoint location is `tracker_runtime/best_model.pt`, but model files are
+ignored by Git. A replacement checkpoint must match the exact checked-in SmallUNet structure.
+
+## ROS topic contract
+
+| Topic | ROS type | Direction | Payload |
+|---|---|---|---|
+| `/ultrasound/projection/max` | `sensor_msgs/msg/Image` | module → tracker | native-size `mono8` maximum projection |
+| `/needle/encoder/geometry_px` | `std_msgs/msg/Float64MultiArray` | module → tracker | `[frame, tip_x, tip_y, base_x, base_y, width, height]` in native pixels |
+| `/needle/tracking/result_px` | `std_msgs/msg/Float64MultiArray` | tracker → module | `[image_seq, encoder_frame, detected, x_512, y_512, cnn, used_kalman, visible_run]` |
+| `/needle/tracking/overlay` | `sensor_msgs/msg/Image` | tracker → module | native-size `mono8` preview |
+
+`NaN` tip/base coordinates mean that registration is unavailable or the encoder needle is
+outside the image. The tracker clears temporal state instead of returning a stale result.
+
+## Important compatibility behavior
+
+The embedded legacy widget preserves its original initialization behavior. Selecting this
+module may publish theta=0 and d=0 if the EPOS bridge is already running. Establish a safe
+hardware state before selecting or reloading the module.
+
+## Diagnostics
 
 ```bash
-ros2 topic info -v /ultrasound/projection/max
+ros2 node list
+ros2 node info /needle_tracker_node
 ros2 topic hz /ultrasound/projection/max
-ros2 topic bw /ultrasound/projection/max
-ros2 run rqt_image_view rqt_image_view
+ros2 topic echo /needle/encoder/geometry_px
+ros2 topic echo /needle/tracking/result_px
+ros2 topic hz /needle/tracking/overlay
 ```
-
-The verified image was `mono8`, 512 x 512, at approximately 20 Hz. The module's Rates
-display reports OpenIGTLink volume RX, ROS image TX, and motor-state RX rates.
