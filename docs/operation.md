@@ -52,7 +52,17 @@ After Fiducial Registration, arrange the transform hierarchy described in
 volume, and operate the existing angle/linear controls. Do not run the legacy Python script
 at the same time as the Slicer module.
 
-## 6. Verify before closed-loop experiments
+## 6. Start visualization-only needle detection
+
+In the **Needle Tracking** section, press **Start Tracker**. This launches the repository-local
+ROS 2 detector and switches Slicer to the side-by-side layout. Red retains navigation overlays;
+Yellow shows only ultrasound and the final red detection cross. Use **Show Original + Detection
+in Slices** to restore this layout after changing views.
+
+Press **Stop Tracker** before replacing model weights. The detector does not publish motor
+commands and is not a closed-loop controller.
+
+## 7. Verify before closed-loop experiments
 
 ```bash
 ros2 node info /epos_motion_bridge_node
@@ -60,6 +70,8 @@ ros2 topic hz /needle/state/theta_deg
 ros2 topic hz /needle/state/d_mm
 ros2 topic hz /ultrasound/projection/max
 ros2 topic echo --once /ultrasound/projection/max
+ros2 topic echo /needle/tracking/result_px
+ros2 topic hz /needle/tracking/overlay
 ```
 
 Confirm motor direction and scaling with small commands, confirm the model follows encoder

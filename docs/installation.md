@@ -107,3 +107,27 @@ export NEEDLE_RECORD_DIR=/path/to/writable/volume_recordings
 
 If this variable is not set, recordings are written under the ignored
 `runtime/volume_recordings` directory in the repository.
+
+## 8. Prepare the optional detector runtime
+
+The detection source is included, but trained weights are not. Create a Python 3.10 virtual
+environment that can import the system ROS 2 packages:
+
+```bash
+cd /path/to/robotic-needle-navigation-system
+/usr/bin/python3 -m venv --system-site-packages .venv-needle-tracker
+.venv-needle-tracker/bin/pip install -r \
+  slicer_modules/NeedleNavigation/tracker_runtime/requirements.txt
+```
+
+Install a PyTorch wheel suitable for the workstation. The verified CUDA 12.1 environment used:
+
+```bash
+.venv-needle-tracker/bin/pip install torch==2.4.1 \
+  --index-url https://download.pytorch.org/whl/cu121
+```
+
+Copy an authorized, compatible SmallUNet `state_dict` to
+`slicer_modules/NeedleNavigation/tracker_runtime/best_model.pt`, or set `NEEDLE_MODEL` to an
+external absolute path. The model file is intentionally ignored by Git. See the runtime
+[README](../slicer_modules/NeedleNavigation/tracker_runtime/README.md) for the exact contract.

@@ -12,17 +12,19 @@ flowchart LR
     OIGTL["OpenIGTLinkIF<br/>C++ extension"]
     REG["Fiducial Registration<br/>SlicerIGT"]
     PY["NeedleNavigation<br/>Python module"]
+    SLICES["Red: original + navigation<br/>Yellow: image + red detected tip"]
     MODEL["ProbeToImage + NeedleMoveEncoder<br/>MRML transforms/model"]
     ROS2EXT["SlicerROS2<br/>C++ extension"]
     OIGTL --> PY
     REG --> MODEL
     PY <--> MODEL
     PY <--> ROS2EXT
+    PY --> SLICES
   end
 
   subgraph ROS["Independent ROS 2 processes"]
     BRIDGE["/epos_motion_bridge_node<br/>C++"]
-    DETECT["future needle detector/controller<br/>Python or C++"]
+    DETECT["/needle_tracker_node<br/>SmallUNet Python process"]
   end
 
   subgraph HW["Motor hardware"]
@@ -30,10 +32,10 @@ flowchart LR
   end
 
   PLUS -- "OpenIGTLink IMAGE<br/>IP/port configurable" --> OIGTL
-  ROS2EXT -- "/ultrasound/projection/max<br/>sensor_msgs/Image" --> DETECT
+  ROS2EXT -- "projection + encoder pixel geometry" --> DETECT
+  DETECT -- "numeric result + mono8 preview" --> ROS2EXT
   ROS2EXT -- "/needle/cmd/*" --> BRIDGE
   BRIDGE -- "/needle/state/*" --> ROS2EXT
-  DETECT -. "future control target" .-> BRIDGE
   BRIDGE -- "EPOS Command Library / CAN" --> EPOS
   EPOS -- "encoder counts" --> BRIDGE
 ```
@@ -42,7 +44,13 @@ The Slicer Python module owns visualization, user interaction, recording, projec
 mapping degree/mm state into the MRML transform. The bridge is a separate ROS 2 C++ process
 and owns EPOS unit conversion and hardware I/O. PlusServer is a separate Windows program.
 
-Future detection should remain an independent ROS 2 node subscribing to the image topic.
-Publish detections and proposed targets separately, and place safety/limit validation between
-detector output and motor commands. This preserves the current manual behavior while allowing
-the detector to be introduced and tested without embedding inference load in Slicer.
+Detection remains an independent ROS 2 node so CUDA/PyTorch work cannot block the Slicer UI.
+The node subscribes to images and encoder-derived pixel geometry, but publishes only detection
+results and a preview. There is deliberately no detector-to-bridge motor command path. Any
+future closed-loop control must be added as a separate, safety-reviewed layer with explicit
+limits and watchdog behavior.
+
+The detector computes in canonical 512×512 coordinates. Its preview is restored to the native
+input dimensions, and Slicer copies the source volume's IJK-to-RAS matrix and parent transform.
+Red and Yellow then share an identical SliceToRAS matrix, preventing aspect, registration, or
+90-degree rotation differences.

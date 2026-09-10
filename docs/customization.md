@@ -17,11 +17,18 @@ The code is uploadable now, but the following values are intentionally easy to c
 | ROS topic names | `epos.yaml` and Slicer scripts together | current `/needle/...` contract |
 | Input volume / projection mode | Slicer module UI / legacy constants | selected volume, Max |
 | Recording directory | `NEEDLE_RECORD_DIR` | repository-local ignored runtime directory |
+| Tracker Python | `NEEDLE_TRACKER_PYTHON` | repository-local `.venv-needle-tracker/bin/python` |
+| Tracker checkpoint | `NEEDLE_MODEL` or `tracker_runtime/best_model.pt` | not included; exact SmallUNet state_dict required |
 | Registration transform names/hierarchy | Slicer scene and registration doc | manual post-registration step |
 | Dependency commits | `verified-environment.md` | pinned to the current machine |
 
 The public repository does not include the Maxon example-derived homing helper. Each deployment
 must document and validate its authorized homing procedure separately.
+
+The public repository also excludes `.pt`, `.pth`, and `.ckpt` files from the tracker runtime.
+Changing a checkpoint does not change the architecture: it must match the checked-in
+`SmallUNet(base_channels=16)` definition exactly. Stop and restart the tracker after replacing
+weights.
 
 When changing a topic name, update both publisher and subscriber sides or remap it at launch.
 When changing a motor calibration value, verify small motions without relying on the visual
