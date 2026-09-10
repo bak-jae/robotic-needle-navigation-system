@@ -25,21 +25,26 @@ The repository does not contain ultrasound recordings, training datasets, traine
 weights, build output, Plus or Maxon installers, vendor headers/libraries, or the previous
 Maxon example-derived homing helper.
 
-## Verified environment
+## Tested software setup
 
-| Component | Verified version |
-|---|---|
-| Operating system | Ubuntu 22.04.5 LTS |
-| ROS 2 | Humble |
-| 3D Slicer | 5.6.2 source build, commit `f10cd8c229b50e4d96e55743385f17482214433a` |
-| SlicerROS2 | commit `2abf6a9c0563fe5d2041a038fccdffedfa7cb7c3` plus repository patches |
-| SlicerOpenIGTLink | commit `f806007ccc4b5c7cb6ea14979670a468b39c5a45` |
-| SlicerIGT | commit `c73b30761f01822081cfa86a3b95f429ef7a5389` plus repository patch |
-| Motor controller | EPOS4 with EPOS Command Library 6.8.1.0 |
-| Ultrasound | Telemed ArtUS with Plus 2.8.0 Telemed Win32 |
+The system was built and tested with the combination below. The short revision value
+identifies the exact source snapshot that was used; it is not a separate version that
+must be entered in Slicer.
 
-A pinned commit is a fixed source revision used to reproduce the verified build instead
-of relying on a branch that changes over time. See
+| Component | Setup used for testing | Source revision |
+|---|---|---|
+| Operating system | Ubuntu 22.04.5 LTS | - |
+| ROS 2 | Humble | - |
+| 3D Slicer | Version 5.6.2, built from source | `f10cd8c` |
+| SlicerROS2 | ROS 2 integration with two included compatibility fixes | `2abf6a9` |
+| SlicerOpenIGTLink | OpenIGTLink communication for receiving ultrasound images | `f806007` |
+| SlicerIGT | Image-guided therapy support with one included build fix | `c73b307` |
+| Motor controller | EPOS4 with EPOS Command Library 6.8.1.0 | - |
+| Ultrasound | Telemed ArtUS with Plus 2.8.0 Telemed Win32 | - |
+
+These are the versions known to work together. Other versions may also work, but they
+have not been verified for this repository. Full revision IDs and the names of the
+included fixes are listed in
 [`docs/verified-environment.md`](docs/verified-environment.md).
 
 ## Documentation
