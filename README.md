@@ -3,8 +3,9 @@
 A research platform that receives ultrasound volumes in 3D Slicer, aligns a virtual
 needle model with the image coordinate system, and controls separate rotational and
 linear EPOS4 axes through ROS 2. The Slicer module publishes a full-resolution maximum
-projection as a `mono8` image on `/ultrasound/projection/max`, providing an input for
-future real-time needle detection and closed-loop research.
+projection as a `mono8` image on `/ultrasound/projection/max`. An independent ROS 2
+SmallUNet process consumes that image and returns a visualization-only needle-tip result
+to Slicer. Trained model weights are intentionally not included.
 
 > **License:** Academic research and education use only. This public repository is
 > source-available but is not OSI-approved open-source software. Commercial, clinical,
@@ -14,13 +15,15 @@ future real-time needle detection and closed-loop research.
 
 - `ros2_epos_cmd`: EPOS4 ROS 2 bridge, launch file, and parameter YAML
 - `NeedleNavigation`: Slicer module containing the existing control, preview, recording,
-  and ROS 2 ultrasound projection interface
+  ROS 2 ultrasound projection, detector process controls, and dual-Slice visualization
+- `NeedleNavigation/tracker_runtime`: replaceable SmallUNet inference structure and ROS 2
+  adapter; checkpoint excluded
 - Compatibility patches used for the pinned SlicerROS2 and SlicerIGT revisions
 - Installation, registration, Plus/Telemed, topic, and operating documentation
 
-The repository does not contain ultrasound recordings, training datasets, build output,
-Plus or Maxon installers, vendor headers/libraries, or the previous Maxon example-derived
-homing helper.
+The repository does not contain ultrasound recordings, training datasets, trained model
+weights, build output, Plus or Maxon installers, vendor headers/libraries, or the previous
+Maxon example-derived homing helper.
 
 ## Verified environment
 
@@ -72,7 +75,8 @@ In another terminal, source ROS 2 and the SlicerROS2 workspace before starting t
 source-built Slicer executable. Add this repository's `slicer_modules` directory to
 Slicer's **Additional module paths**, restart Slicer, and select
 **IGT > Needle Navigation**. Selecting the module does not start CAN, homing, or the
-EPOS bridge.
+EPOS bridge. The module's **Start Tracker** button starts only the detector process; the
+detector has no motor-command publisher.
 
 ## Configuration
 

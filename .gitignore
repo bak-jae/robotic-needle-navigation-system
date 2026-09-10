@@ -23,6 +23,11 @@ volume_recordings/
 .env
 config/system.local.yaml
 
+# Detector weights are research artifacts and are not distributed in this repository.
+slicer_modules/NeedleNavigation/tracker_runtime/*.pt
+slicer_modules/NeedleNavigation/tracker_runtime/*.pth
+slicer_modules/NeedleNavigation/tracker_runtime/*.ckpt
+
 # IDE / OS
 .idea/
 .vscode/
