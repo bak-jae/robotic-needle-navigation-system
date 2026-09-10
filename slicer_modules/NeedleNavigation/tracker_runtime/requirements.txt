@@ -1,0 +1,4 @@
+# PyTorch is installed separately so each workstation can select a compatible
+# CPU or CUDA wheel. ROS 2 provides rclpy and cv_bridge through system packages.
+numpy>=1.23,<2
+opencv-python>=4.5,<5
